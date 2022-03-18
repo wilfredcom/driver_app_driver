@@ -1,0 +1,7 @@
+{
+  "name": "drive_app_driver",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue"
+}
