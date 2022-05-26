@@ -20,6 +20,7 @@
                                     <p>Tiempo(Aprox): {{destino.user.tiempo_aproximado_de_viaje.text}} </p>
                                     <p>Km.: {{destino.user.distancia_servicio.text}} </p>
                                     <p>Costo.: {{destino.user.costo}} </p>
+                                    <p>Metodo de pago.: Efectivo </p>
                                 </div>
                             </div>
                             <div class="col-span-6  text-[#000] align-middle text-center self-center font-bold ml-2">
