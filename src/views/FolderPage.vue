@@ -185,11 +185,11 @@ export default defineComponent({
                 destino.value.user = serv.user
                 destino.value.data = serv
                 openModal()
-                if(DataStatusAnswere.value == null){
+                // if(DataStatusAnswere.value == null){
                     setInterval(() => ListenAnswere(), 2500);
-                }else{
-                    openModalSerPrestado()
-                }
+                // }else{
+                //     openModalSerPrestado()
+                // }
                   
             } catch(e) {
                 // statements
@@ -259,7 +259,6 @@ export default defineComponent({
             try{
                  let { data } = await axios.post('https://ftrack.upwaresoft.com/api/get-solicitud-user', { id: destino.value.data.data.id })
                  DataStatusAnswere.value = data.driver
-                 openModalSerPrestado()
                 
             }catch(e){
                 console.log({ e })
