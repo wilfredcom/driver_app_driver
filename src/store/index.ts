@@ -2,6 +2,7 @@ import { createStore } from 'vuex'
 import { Loader } from "@googlemaps/js-api-loader"
 import { modalController } from '@ionic/vue';
 import Modal from '../componentes/modalBuscarDestino.vue'
+import ModalServicioPrestado from '../componentes/modalServicioPrestado.vue'
 
 export default createStore({
     state: {
@@ -25,6 +26,16 @@ export default createStore({
                 })
             return modal.present();
         },
+        openModalServicioPrestado: async () => {
+
+            const modal = await modalController
+                .create({
+                    component: ModalServicioPrestado,
+                    initialBreakpoint: 0.7,
+                    breakpoints: [0, 0.5, 1]
+                })
+            return modal.present();
+        },
         destino: {
             user: null,
             data: null,
@@ -38,6 +49,7 @@ export default createStore({
         markertInitPosition: state => state.markertInitPosition,
         mis_viajes: state => state.mis_viajes,
         openModal: state => state.openModal,
+        openModalServicioPrestado: state => state.openModalServicioPrestado,
         destino: state => state.destino
     },
     mutations: {
@@ -46,6 +58,10 @@ export default createStore({
         },
         setOpenModal(state, data) {
             state.openModal = data
+        },
+
+        setOpenModalServicioPrestado(state, data) {
+            state.openModalServicioPrestado = data
         },
         setMisViajes(state, data) {
             state.mis_viajes = data

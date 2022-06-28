@@ -25,6 +25,7 @@
                         <p v-else class="text-sm" >Solicitud De Envio de paquete</p>
                     </div>
                     <div class=" text-left divide-y uppercase text-[#cecece] text-sm font-bold align-middle mb-2 " v-if="viaje.user.type_solicitud == 'taxi'">
+                        <p>Solicitud Creada: {{ viaje.creado }} </p>
                         <p>Inicio: {{ viaje.user.inicio_ruta_address.substr(0,20)}} </p>
                         <p>Destino: {{viaje.user.final_ruta_address.substr(0,20)}} </p>
                         <p>Tiempo(Aprox): {{viaje.user.tiempo_aproximado_de_viaje.text}} </p>
@@ -32,6 +33,7 @@
                         <p>Costo.: {{viaje.user.costo}} </p>
                     </div>
                     <div class=" text-left divide-y uppercase text-[#cecece] text-sm font-bold align-middle mb-2 " v-else>
+                        <p>Solicitud Creada: {{ viaje.creado}} </p>
                         <p>Inicio: {{ viaje.user.inicio_ruta_address.substr(0,20)}} </p>
                         <p>Destino: {{viaje.user.final_ruta_address.substr(0,20)}} </p>
                         <p>Tiempo(Aprox): {{viaje.user.tiempo_aproximado_de_viaje.text}} </p>
@@ -77,6 +79,7 @@ import {
 import { useStore } from 'vuex'
 import axios from 'axios'
 import Modal from '../componentes/modalBuscarDestino.vue'
+import ModalSerPres from '../componentes/modalServicioPrestado.vue'
 
 export default defineComponent({
     name: 'FolderPage',
@@ -103,25 +106,30 @@ export default defineComponent({
             get: () => { return store.getters.google },
             set: (val: any) => { store.commit('setGoogle', val) }
         });
+        let DataStatusAnswere: any = ref('');
 
-        const map: any = computed({
-            get: () => { return store.getters.Map },
-            set: (val) => { store.commit('setMap', val) }
-        });
+        // const map: any = computed({
+        //     get: () => { return store.getters.Map },
+        //     set: (val) => { store.commit('setMap', val) }
+        // });
 
-        let markertInitPosition: any = computed({
-            get: () => { return store.getters.markertInitPosition },
-            set: (val: any) => { store.commit('setMarkerInitPosition', val) }
-        });
+        // let markertInitPosition: any = computed({
+        //     get: () => { return store.getters.markertInitPosition },
+        //     set: (val: any) => { store.commit('setMarkerInitPosition', val) }
+        // });
 
         let MisViajes: any = computed({
             get: () => { return store.getters.mis_viajes },
             set: (val: any) => { store.commit('setMisViajes', val) }
         });
 
-        let modalPrincipal: any = computed({
+        const modalPrincipal: any = computed({
             get: () => { return store.getters.openModal },
             set: (val: any) => { store.commit('setOpenModal', val) }
+        });
+        let modalServicioPrestado: any = computed({
+            get: () => { return store.getters.openModalServicioPrestado },
+            set: (val: any) => { store.commit('setOpenModalServicioPrestado', val) }
         });
 
         let destino: any = computed({
@@ -177,6 +185,12 @@ export default defineComponent({
                 destino.value.user = serv.user
                 destino.value.data = serv
                 openModal()
+                if(DataStatusAnswere.value == null){
+                    setInterval(() => ListenAnswere(), 2500);
+                }else{
+                    openModalSerPrestado()
+                }
+                  
             } catch(e) {
                 // statements
                 console.log(e);
@@ -226,7 +240,6 @@ export default defineComponent({
                     await service.getDistanceMatrix(request).then((response: any) => {
 
                         var distancia  = response.rows[0].elements[0].distance.value; 
-                        console.log({ distancia })
                         if(distancia < 3000){
                             MisViajes.value.push(element)
                         }
@@ -242,8 +255,16 @@ export default defineComponent({
             }
         }
 
-
-       
+        const ListenAnswere: any = async () => {
+            try{
+                 let { data } = await axios.post('https://ftrack.upwaresoft.com/api/get-solicitud-user', { id: destino.value.data.data.id })
+                 DataStatusAnswere.value = data.driver
+                 openModalSerPrestado()
+                
+            }catch(e){
+                console.log({ e })
+            }
+        }
 
         const openModal = async () => {
 
@@ -254,6 +275,16 @@ export default defineComponent({
                     breakpoints: [0, 0.5, 1]
                 })
             return modalPrincipal.value.present();
+        }
+        const openModalSerPrestado = async () => {
+
+            modalServicioPrestado.value = await modalController
+                .create({
+                    component: ModalSerPres,
+                    initialBreakpoint: 1,
+                    breakpoints: [1, 1, 1]
+                })
+            return modalServicioPrestado.value.present();
         }
 
         onMounted(() => {

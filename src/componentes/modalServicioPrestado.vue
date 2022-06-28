@@ -18,9 +18,9 @@
                             <p>Inicio: {{ destino.user.inicio_ruta_address.substr(0, 20) }} </p>
                             <p>Destino: {{ destino.user.final_ruta_address.substr(0, 20) }} </p>
                             <p>Tiempo(Aprox): {{ destino.user.tiempo_aproximado_de_viaje.text }} </p>
-                            <p>Km.: {{ destino.user.distancia_servicio.text }} </p>
-                            <p>Costo.: {{ destino.user.costo }} </p>
-                            <p>Metodo de pago.: Efectivo </p>
+                            <p>Km: {{ destino.user.distancia_servicio.text }} </p>
+                            <p>Costo: {{ destino.user.costo }} </p>
+                            <p>Metodo de pago: Efectivo </p>
                         </div>
                     </div>
                     <div class="col-span-6  text-[#000] align-middle text-center self-center font-bold ml-2">
@@ -31,8 +31,7 @@
                     </div>
                     <div class="col-span-6  text-[#000] align-middle text-center self-center font-bold ml-2">
                         <button
-                            class="mt-2 mb-2 w-full  bg-green-300 p-2 rounded-xl hover:bg-green-500  text-white font-semibold"
-                            @click="aceptDrive">
+                            class="mt-2 mb-2 w-full  bg-green-300 p-2 rounded-xl hover:bg-green-500  text-white font-semibold">
                             <p>ACEPTAR</p>
                         </button>
                     </div>
@@ -59,9 +58,7 @@ import {
     computed
 } from 'vue';
 import { useStore } from 'vuex'
-import axios from 'axios'
-// import { useStore } from 'vuex'
-// import { informationCircle } from 'ionicons/icons';
+// import axios from 'axios'
 
 
 export default defineComponent({
@@ -72,27 +69,10 @@ export default defineComponent({
             get: () => { return store.getters.destino },
             set: (val: any) => { store.commit('setDestino', val) }
         });
-        const aceptDrive: any = async () => {
-            await axios.post('https://ftrack.upwaresoft.com/api/store-solicitud-drive',
-                {
-                    id: destino.value.data.data.id,
-                    drive: JSON.stringify({
-                        name: 'jonh doe', 
-                        id: '5066767529',
-                        carro: 'FIAT 1 color verde',
-                        placa: 'MAO12F',
-                        likes:0,
-                        mensajes:[],
-                        comentarios:[],
-                        count_drives: 0,
-                        respuesta: 'servicio aceptado'
-                    })
-                });
-        }
+      
 
         return {
             destino,
-            aceptDrive
         }
     },
 
