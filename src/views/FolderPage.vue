@@ -16,45 +16,52 @@
             </ion-header> -->
             <div class="grid grid-cols-12 mb-2 ml-2 mr-2 shadow-2xl" v-for="(viaje, v ) in MisViajes" :key="v">
                 <div class="col-span-2">
-                    <img src="https://img.icons8.com/stickers/100/000000/car-theft.png"  v-if="viaje.user.type_solicitud == 'taxi'" />
-                     <img src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/54/000000/external-delivery-tools-and-material-ecommerce-flaticons-lineal-color-flat-icons-2.png" v-else  class="ml-2"/>
+                    <img src="https://img.icons8.com/stickers/100/000000/car-theft.png"
+                        v-if="viaje.user.type_solicitud == 'taxi'" />
+                    <img src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/54/000000/external-delivery-tools-and-material-ecommerce-flaticons-lineal-color-flat-icons-2.png"
+                        v-else class="ml-2" />
                 </div>
                 <div class="col-span-10  mt-2 ml-2">
                     <div class=" text-center  uppercase text-[#000] text-2xl font-bold align-middle mb-5 ">
-                        <p v-if="viaje.user.type_solicitud == 'taxi'" >Solicitud De taxi</p>
-                        <p v-else class="text-sm" >Solicitud De Envio de paquete</p>
+                        <p v-if="viaje.user.type_solicitud == 'taxi'">Solicitud De taxi</p>
+                        <p v-else class="text-sm">Solicitud De Envio de paquete</p>
                     </div>
-                    <div class=" text-left divide-y uppercase text-[#cecece] text-sm font-bold align-middle mb-2 " v-if="viaje.user.type_solicitud == 'taxi'">
+                    <div class=" text-left divide-y uppercase text-[#cecece] text-sm font-bold align-middle mb-2 "
+                        v-if="viaje.user.type_solicitud == 'taxi'">
                         <p>Solicitud Creada: {{ viaje.creado }} </p>
-                        <p>Inicio: {{ viaje.user.inicio_ruta_address.substr(0,20)}} </p>
-                        <p>Destino: {{viaje.user.final_ruta_address.substr(0,20)}} </p>
-                        <p>Tiempo(Aprox): {{viaje.user.tiempo_aproximado_de_viaje.text}} </p>
-                        <p>Km.: {{viaje.user.distancia_servicio.text}} </p>
-                        <p>Costo.: {{viaje.user.costo}} </p>
+                        <p>Inicio: {{ viaje.user.inicio_ruta_address.substr(0, 20) }} </p>
+                        <p>Destino: {{ viaje.user.final_ruta_address.substr(0, 20) }} </p>
+                        <p>Tiempo(Aprox): {{ viaje.user.tiempo_aproximado_de_viaje.text }} </p>
+                        <p>Km.: {{ viaje.user.distancia_servicio.text }} </p>
+                        <p>Costo.: {{ viaje.user.costo }} </p>
                     </div>
-                    <div class=" text-left divide-y uppercase text-[#cecece] text-sm font-bold align-middle mb-2 " v-else>
-                        <p>Solicitud Creada: {{ viaje.creado}} </p>
-                        <p>Inicio: {{ viaje.user.inicio_ruta_address.substr(0,20)}} </p>
-                        <p>Destino: {{viaje.user.final_ruta_address.substr(0,20)}} </p>
-                        <p>Tiempo(Aprox): {{viaje.user.tiempo_aproximado_de_viaje.text}} </p>
-                        <p>Km.: {{viaje.user.distancia_servicio.text}} </p>
+                    <div class=" text-left divide-y uppercase text-[#cecece] text-sm font-bold align-middle mb-2 "
+                        v-else>
+                        <p>Solicitud Creada: {{ viaje.creado }} </p>
+                        <p>Inicio: {{ viaje.user.inicio_ruta_address.substr(0, 20) }} </p>
+                        <p>Destino: {{ viaje.user.final_ruta_address.substr(0, 20) }} </p>
+                        <p>Tiempo(Aprox): {{ viaje.user.tiempo_aproximado_de_viaje.text }} </p>
+                        <p>Km.: {{ viaje.user.distancia_servicio.text }} </p>
                         <p class="text-center">-----paquete-----</p>
-                        <p>Alto: {{ viaje.user.paquete.alto}}  (cm)  </p>
-                        <p>Ancho: {{ viaje.user.paquete.ancho}}  (cm)  </p>
-                        <p>largo: {{ viaje.user.paquete.largo}}  (cm)  </p>
-                        <p>peso: {{ viaje.user.paquete.peso}}(g)</p>
-                        <p>cantidad: {{ viaje.user.paquete.cantidad}}</p>
-                        <p>descripción: {{ viaje.user.paquete.descripcion}}</p>
-                        <p>Costo.: {{ Intl.NumberFormat().format(viaje.user.costo)  }} </p>
+                        <p>Alto: {{ viaje.user.paquete.alto }} (cm) </p>
+                        <p>Ancho: {{ viaje.user.paquete.ancho }} (cm) </p>
+                        <p>largo: {{ viaje.user.paquete.largo }} (cm) </p>
+                        <p>peso: {{ viaje.user.paquete.peso }}(g)</p>
+                        <p>cantidad: {{ viaje.user.paquete.cantidad }}</p>
+                        <p>descripción: {{ viaje.user.paquete.descripcion }}</p>
+                        <p>Costo.: {{ Intl.NumberFormat().format(viaje.user.costo) }} </p>
                     </div>
                 </div>
                 <div class="col-span-6  text-[#000] align-middle text-center self-center font-bold ml-2">
-                    <button class="mt-2 mb-2 w-full  bg-red-300 p-2 rounded-xl hover:bg-red-500  text-white font-semibold">
+                    <button
+                        class="mt-2 mb-2 w-full  bg-red-300 p-2 rounded-xl hover:bg-red-500  text-white font-semibold">
                         <p>RECHAZAR</p>
                     </button>
                 </div>
                 <div class="col-span-6  text-[#000] align-middle text-center self-center font-bold ml-2">
-                    <button class="mt-2 mb-2 w-full  bg-green-300 p-2 rounded-xl hover:bg-green-500  text-white font-semibold" @click.prevent="AceptServicio(viaje)">
+                    <button
+                        class="mt-2 mb-2 w-full  bg-green-300 p-2 rounded-xl hover:bg-green-500  text-white font-semibold"
+                        @click.prevent="AceptServicio(viaje)">
                         <p>ACEPTAR</p>
                     </button>
                 </div>
@@ -79,7 +86,7 @@ import {
 import { useStore } from 'vuex'
 import axios from 'axios'
 import Modal from '../componentes/modalBuscarDestino.vue'
-import ModalSerPres from '../componentes/modalServicioPrestado.vue'
+
 
 export default defineComponent({
     name: 'FolderPage',
@@ -106,17 +113,7 @@ export default defineComponent({
             get: () => { return store.getters.google },
             set: (val: any) => { store.commit('setGoogle', val) }
         });
-        let DataStatusAnswere: any = ref('');
-
-        // const map: any = computed({
-        //     get: () => { return store.getters.Map },
-        //     set: (val) => { store.commit('setMap', val) }
-        // });
-
-        // let markertInitPosition: any = computed({
-        //     get: () => { return store.getters.markertInitPosition },
-        //     set: (val: any) => { store.commit('setMarkerInitPosition', val) }
-        // });
+        let DataStatusAnswere: any = ref(null);
 
         let MisViajes: any = computed({
             get: () => { return store.getters.mis_viajes },
@@ -127,10 +124,7 @@ export default defineComponent({
             get: () => { return store.getters.openModal },
             set: (val: any) => { store.commit('setOpenModal', val) }
         });
-        let modalServicioPrestado: any = computed({
-            get: () => { return store.getters.openModalServicioPrestado },
-            set: (val: any) => { store.commit('setOpenModalServicioPrestado', val) }
-        });
+       
 
         let destino: any = computed({
             get: () => { return store.getters.destino },
@@ -180,19 +174,13 @@ export default defineComponent({
             }
         }
 
-        const AceptServicio: any = async  (serv: any) => {
+        const AceptServicio: any = async (serv: any) => {
             try {
                 destino.value.user = serv.user
                 destino.value.data = serv
                 openModal()
-                // if(DataStatusAnswere.value == null){
-                    setInterval(() => ListenAnswere(), 2500);
-                // }else{
-                //     openModalSerPrestado()
-                // }
-                  
-            } catch(e) {
-                // statements
+                ListenAnswere()
+            } catch (e) {
                 console.log(e);
             }
         }
@@ -205,66 +193,47 @@ export default defineComponent({
                 servicios.value = [];
 
                 for (var i = 0; i < data.length; i++) {
-                    
                     servicios.value.push({ user: JSON.parse(data[i].user), data: data[i], creado: data[i].created_at })
-
                 }
-
-
                 const pos: any = await new Promise((resolve, reject) => {
-                  navigator.geolocation.getCurrentPosition(resolve, reject);
+                    navigator.geolocation.getCurrentPosition(resolve, reject);
                 });
-                    
-
-
                 for (var j = 0; j < servicios.value.length; j++) {
                     var element = servicios.value[j];
-
-
-                        const service = new google.value.maps.DistanceMatrixService();
-                        const origin1 =  { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                        const origin2 = " " ;
-                        const destinationA = element.user.inicio_ruta_coords;
-                        const destinationB = element.user.inicio_ruta_address;
-
-                        const request = {
-                            origins: [origin1, origin2],
-                            destinations: [destinationA, destinationB],
-                            travelMode: google.value.maps.TravelMode.DRIVING,
-                            unitSystem: google.value.maps.UnitSystem.METRIC,
-                            avoidHighways: false,
-                            avoidTolls: false,
-                        };
-
-
+                    const service = new google.value.maps.DistanceMatrixService();
+                    const origin1 = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                    const origin2 = " ";
+                    const destinationA = element.user.inicio_ruta_coords;
+                    const destinationB = element.user.inicio_ruta_address;
+                    const request = {
+                        origins: [origin1, origin2],
+                        destinations: [destinationA, destinationB],
+                        travelMode: google.value.maps.TravelMode.DRIVING,
+                        unitSystem: google.value.maps.UnitSystem.METRIC,
+                        avoidHighways: false,
+                        avoidTolls: false,
+                    };
                     await service.getDistanceMatrix(request).then((response: any) => {
-
-                        var distancia  = response.rows[0].elements[0].distance.value; 
-                        if(distancia < 3000){
+                        var distancia = response.rows[0].elements[0].distance.value;
+                        if (distancia < 3000) {
                             MisViajes.value.push(element)
                         }
-                        
                     })
-                   
-
                 }
-
             } catch (e) {
 
                 console.log(e);
             }
         }
-
         const ListenAnswere: any = async () => {
-            try{
-                 let { data } = await axios.post('https://ftrack.upwaresoft.com/api/get-solicitud-user', { id: destino.value.data.data.id })
-                 DataStatusAnswere.value = data.driver
-                
-            }catch(e){
+            try {
+                let { data } = await axios.post('https://ftrack.upwaresoft.com/api/get-solicitud-user', { id: destino.value.data.data.id })
+                DataStatusAnswere.value = data.driver
+
+            } catch (e) {
                 console.log({ e })
             }
         }
-
         const openModal = async () => {
 
             modalPrincipal.value = await modalController
@@ -275,21 +244,11 @@ export default defineComponent({
                 })
             return modalPrincipal.value.present();
         }
-        const openModalSerPrestado = async () => {
-
-            modalServicioPrestado.value = await modalController
-                .create({
-                    component: ModalSerPres,
-                    initialBreakpoint: 1,
-                    breakpoints: [1, 1, 1]
-                })
-            return modalServicioPrestado.value.present();
-        }
+       
 
         onMounted(() => {
             initMap()
             getSolicitudes()
-           
         })
         onIonViewWillEnter(() => {
             initMap()
