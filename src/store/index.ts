@@ -41,8 +41,10 @@ export default createStore({
             data: null,
         },
 
+        user: {},
     },
     getters: {
+        user: state => state.user,
         loader: state => state.loader,
         google: state => state.google,
         Map: state => state.Map,
@@ -53,6 +55,9 @@ export default createStore({
         destino: state => state.destino
     },
     mutations: {
+        setUser(state, data){
+            state.user = data
+        },
         setDestino(state, data){
           state.destino = data
         },

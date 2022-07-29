@@ -17,39 +17,39 @@
             <div class="grid grid-cols-12 mb-2 ml-2 mr-2 shadow-2xl" v-for="(viaje, v ) in MisViajes" :key="v">
                 <div class="col-span-2">
                     <img src="https://img.icons8.com/stickers/100/000000/car-theft.png"
-                        v-if="viaje.user.type_solicitud == 'taxi'" />
+                        v-if="viaje.type_solicitud == 'taxi'" />
                     <img src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/54/000000/external-delivery-tools-and-material-ecommerce-flaticons-lineal-color-flat-icons-2.png"
                         v-else class="ml-2" />
                 </div>
                 <div class="col-span-10  mt-2 ml-2">
                     <div class=" text-center  uppercase text-[#000] text-2xl font-bold align-middle mb-5 ">
-                        <p v-if="viaje.user.type_solicitud == 'taxi'">Solicitud De taxi</p>
+                        <p v-if="viaje.type_solicitud == 'taxi'">Solicitud De taxi</p>
                         <p v-else class="text-sm">Solicitud De Envio de paquete</p>
                     </div>
                     <div class=" text-left divide-y uppercase text-[#cecece] text-sm font-bold align-middle mb-2 "
-                        v-if="viaje.user.type_solicitud == 'taxi'">
+                        v-if="viaje.type_solicitud == 'taxi'">
                         <p>Solicitud Creada: {{ viaje.creado }} </p>
-                        <p>Inicio: {{ viaje.user.inicio_ruta_address.substr(0, 20) }} </p>
-                        <p>Destino: {{ viaje.user.final_ruta_address.substr(0, 20) }} </p>
-                        <p>Tiempo(Aprox): {{ viaje.user.tiempo_aproximado_de_viaje.text }} </p>
-                        <p>Km.: {{ viaje.user.distancia_servicio.text }} </p>
-                        <p>Costo.: {{ viaje.user.costo }} </p>
+                        <p>Inicio: {{ viaje.inicio_ruta_address.substr(0, 20) }} </p>
+                        <p>Destino: {{ viaje.final_ruta_address.substr(0, 20) }} </p>
+                        <p>Tiempo(Aprox): {{ viaje.tiempo_aproximado_de_viaje.text }} </p>
+                        <p>Km.: {{ viaje.distancia_servicio.text }} </p>
+                        <p>Costo.: {{ viaje.costo }} </p>
                     </div>
                     <div class=" text-left divide-y uppercase text-[#cecece] text-sm font-bold align-middle mb-2 "
                         v-else>
                         <p>Solicitud Creada: {{ viaje.creado }} </p>
-                        <p>Inicio: {{ viaje.user.inicio_ruta_address.substr(0, 20) }} </p>
-                        <p>Destino: {{ viaje.user.final_ruta_address.substr(0, 20) }} </p>
-                        <p>Tiempo(Aprox): {{ viaje.user.tiempo_aproximado_de_viaje.text }} </p>
-                        <p>Km.: {{ viaje.user.distancia_servicio.text }} </p>
+                        <p>Inicio: {{ viaje.inicio_ruta_address.substr(0, 20) }} </p>
+                        <p>Destino: {{ viaje.final_ruta_address.substr(0, 20) }} </p>
+                        <p>Tiempo(Aprox): {{ viaje.tiempo_aproximado_de_viaje.text }} </p>
+                        <p>Km.: {{ viaje.distancia_servicio.text }} </p>
                         <p class="text-center">-----paquete-----</p>
-                        <p>Alto: {{ viaje.user.paquete.alto }} (cm) </p>
-                        <p>Ancho: {{ viaje.user.paquete.ancho }} (cm) </p>
-                        <p>largo: {{ viaje.user.paquete.largo }} (cm) </p>
-                        <p>peso: {{ viaje.user.paquete.peso }}(g)</p>
-                        <p>cantidad: {{ viaje.user.paquete.cantidad }}</p>
-                        <p>descripción: {{ viaje.user.paquete.descripcion }}</p>
-                        <p>Costo.: {{ Intl.NumberFormat().format(viaje.user.costo) }} </p>
+                        <p>Alto: {{ viaje.alto }} (cm) </p>
+                        <p>Ancho: {{ viaje.ancho }} (cm) </p>
+                        <p>largo: {{ viaje.largo }} (cm) </p>
+                        <p>peso: {{ viaje.peso }}(g)</p>
+                        <p>cantidad: {{ viaje.cantidad }}</p>
+                        <p>descripción: {{ viaje.descripcion }}</p>
+                        <p>Costo.: {{ Intl.NumberFormat().format(viaje.costo) }} </p>
                     </div>
                 </div>
                 <div class="col-span-6  text-[#000] align-middle text-center self-center font-bold ml-2">
@@ -102,30 +102,23 @@ export default defineComponent({
     setup() {
 
         const store: any = useStore();
-        const servicios: any = ref([]);
-
         const loader: any = computed({
             get: () => { return store.getters.loader },
             set: (val) => { store.commit('setLoader', val) }
         });
-
         let google: any = computed({
             get: () => { return store.getters.google },
             set: (val: any) => { store.commit('setGoogle', val) }
         });
         let DataStatusAnswere: any = ref(null);
-
         let MisViajes: any = computed({
             get: () => { return store.getters.mis_viajes },
             set: (val: any) => { store.commit('setMisViajes', val) }
         });
-
         const modalPrincipal: any = computed({
             get: () => { return store.getters.openModal },
             set: (val: any) => { store.commit('setOpenModal', val) }
         });
-       
-
         let destino: any = computed({
             get: () => { return store.getters.destino },
             set: (val: any) => { store.commit('setDestino', val) }
@@ -187,24 +180,18 @@ export default defineComponent({
         const getSolicitudes: any = async () => {
             try {
 
-                let { data }: any = await axios('https://ftrack.upwaresoft.com/api/get-solicitudes');
-
-                MisViajes.value = [];
-                servicios.value = [];
-
-                for (var i = 0; i < data.length; i++) {
-                    servicios.value.push({ user: JSON.parse(data[i].user), data: data[i], creado: data[i].created_at })
-                }
+                let { data }: any = await axios('http://localhost:8000/api/get-servicios');
+                console.log({ data })
                 const pos: any = await new Promise((resolve, reject) => {
                     navigator.geolocation.getCurrentPosition(resolve, reject);
                 });
-                for (var j = 0; j < servicios.value.length; j++) {
-                    var element = servicios.value[j];
+                for (var j = 0; j < data.length; j++) {
+                    var element = data[j];
                     const service = new google.value.maps.DistanceMatrixService();
                     const origin1 = { lat: pos.coords.latitude, lng: pos.coords.longitude };
                     const origin2 = " ";
-                    const destinationA = element.user.inicio_ruta_coords;
-                    const destinationB = element.user.inicio_ruta_address;
+                    const destinationA = JSON.parse(element.inicio_ruta_coords);
+                    const destinationB = element.inicio_ruta_address;
                     const request = {
                         origins: [origin1, origin2],
                         destinations: [destinationA, destinationB],
