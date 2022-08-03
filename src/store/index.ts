@@ -3,9 +3,14 @@ import { Loader } from "@googlemaps/js-api-loader"
 import { modalController } from '@ionic/vue';
 import Modal from '../componentes/modalBuscarDestino.vue'
 import ModalServicioPrestado from '../componentes/modalServicioPrestado.vue'
+import Pusher from 'pusher-js'
+import State from 'pusher-js/types/src/core/http/state';
 
 export default createStore({
     state: {
+        pusher: new Pusher('477e95c37e4ada200aac', {
+            cluster: 'us2'
+        }),
         loader: new Loader({
             apiKey: "AIzaSyDjc7g2sDf0u4tc_JiUzA1brt0V3PcDSrk",
             version: "weekly",
@@ -44,6 +49,7 @@ export default createStore({
         user: {},
     },
     getters: {
+        pusher: state => state.pusher,
         user: state => state.user,
         loader: state => state.loader,
         google: state => state.google,
@@ -55,11 +61,14 @@ export default createStore({
         destino: state => state.destino
     },
     mutations: {
-        setUser(state, data){
+        setPusher(state, data){
+            state.pusher = data
+        },
+        setUser(state, data) {
             state.user = data
         },
-        setDestino(state, data){
-          state.destino = data
+        setDestino(state, data) {
+            state.destino = data
         },
         setOpenModal(state, data) {
             state.openModal = data
