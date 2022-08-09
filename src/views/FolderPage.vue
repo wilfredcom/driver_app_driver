@@ -49,7 +49,7 @@
             <p>Destino: {{ viaje.final_ruta_address.substr(0, 20) }}</p>
             <p>Tiempo(Aprox): {{ viaje.tiempo_aproximado_de_viaje.text }}</p>
             <p>Km.: {{ viaje.distancia_servicio.text }}</p>
-            <p>Costo.: {{ viaje.costo }}</p>
+            <p>Costo.: {{ new Intl.NumberFormat(['ban', 'id']).format(viaje.costo) }}</p>
           </div>
           <div
             class="text-left divide-y uppercase text-[#cecece] text-sm font-bold align-middle mb-2"
@@ -67,7 +67,7 @@
             <p>peso: {{ viaje.peso }}(g)</p>
             <p>cantidad: {{ viaje.cantidad }}</p>
             <p>descripción: {{ viaje.descripcion }}</p>
-            <p>Costo.: {{ Intl.NumberFormat().format(viaje.costo) }}</p>
+            <p>Costo.: {{ new Intl.NumberFormat(['ban', 'id']).format(viaje.costo) }}</p>
           </div>
         </div>
         <div
@@ -207,6 +207,7 @@ export default defineComponent({
 
     const AceptServicio: any = async (serv: any) => {
       try {
+        console.log({ serv })
         destino.value.user = serv.user;
         destino.value.data = serv;
         openModal();

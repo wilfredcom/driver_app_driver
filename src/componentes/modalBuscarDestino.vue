@@ -8,31 +8,31 @@
             <ion-card-content>
                 <div class="grid grid-cols-12">
                     <div class="col-span-2">
-                        <img v-if="destino.user.paquete.cantidad == null && destino.user.paquete.cantidad <= 0" src="https://img.icons8.com/stickers/100/000000/car-theft.png" />
+                        <img v-if="destino.data.type_solicitud == 'taxi'" src="https://img.icons8.com/stickers/100/000000/car-theft.png" />
                         <img v-else  src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/54/000000/external-delivery-tools-and-material-ecommerce-flaticons-lineal-color-flat-icons-2.png" />
                     </div>
                     <div class="col-span-10  mt-2 ml-2">
                         <div class=" text-center  uppercase text-[#000] text-5xl font-bold align-middle mb-5 ">
-                            <p v-if="destino.user.paquete.cantidad == null && destino.user.paquete.cantidad <= 0" >Solicitud De taxi</p>
+                            <p v-if="destino.data.type_solicitud == 'taxi'" >Solicitud De taxi</p>
                             <p v-else>Solicitud De transporte</p>
                         </div>
                         <div class=" text-left divide-y uppercase text-[#cecece] text-xs font-bold align-middle mb-2 ">
-                            <p>Inicio: {{ destino.user.inicio_ruta_address.substr(0, 20) }} </p>
-                            <p>Destino: {{ destino.user.final_ruta_address.substr(0, 20) }} </p>
-                            <p>Tiempo(Aprox): {{ destino.user.tiempo_aproximado_de_viaje.text }} </p>
-                            <p>Km.: {{ destino.user.distancia_servicio.text }} </p>
-                            <p>Costo.: {{ destino.user.costo }} </p>
+                            <p>Inicio: {{ destino.data.inicio_ruta_address }} </p>
+                            <p>Destino: {{ destino.data.final_ruta_address}} </p>
+                            <p>Tiempo(Aprox): {{ JSON.parse(destino.data.tiempo_aproximado_de_viaje).text }} </p>
+                            <p>Km.: {{ JSON.parse(destino.data.distancia_servicio).text }} </p>
+                            <p>Costo.: {{ new Intl.NumberFormat(['ban', 'id']).format(destino.data.costo) }} </p>
                             <p>Metodo de pago.: Efectivo </p>
                         </div>
-                        <div v-if="destino.user.paquete.cantidad != null && destino.user.paquete.cantidad > 0" >
-                            <p class="text-center">-----paquete-----</p>
-                            <p>Alto: {{ destino.user.paquete.alto }} (cm) </p>
-                            <p>Ancho: {{ destino.user.paquete.ancho }} (cm) </p>
-                            <p>largo: {{ destino.user.paquete.largo }} (cm) </p>
-                            <p>peso: {{ destino.user.paquete.peso }}(g)</p>
-                            <p>cantidad: {{ destino.user.paquete.cantidad }}</p>
-                            <p>descripción: {{ destino.user.paquete.descripcion }}</p>
-                            <p>Costo.: {{ Intl.NumberFormat().format(destino.user.costo) }} </p>
+                        <div v-if="destino.data.type_solicitud != 'taxi'" >
+                            <p class="text-center">---------</p>
+                            <p>Alto: {{ destino.data.alto }} (cm) </p>
+                            <p>Ancho: {{ destino.data.ancho }} (cm) </p>
+                            <p>largo: {{ destino.data.largo }} (cm) </p>
+                            <p>peso: {{ destino.data.peso }}(g)</p>
+                            <p>cantidad: {{ destino.data.cantidad }}</p>
+                            <p>descripción: {{ destino.data.descripcion }}</p>
+                            <p>Costo.: {{ new Intl.NumberFormat(['ban', 'id']).format(destino.data.costo) }} </p>
                         </div>
                     </div>
                     <div class="col-span-6  text-[#000] align-middle text-center self-center font-bold ml-2">
