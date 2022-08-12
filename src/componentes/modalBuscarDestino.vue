@@ -75,6 +75,7 @@ import axios from 'axios'
 // import { informationCircle } from 'ionicons/icons';
 
 import ModalServPrestados from '../componentes/modalServicioPrestado.vue'
+import { useRouter } from 'vue-router';
 
 
 export default defineComponent({
@@ -91,6 +92,11 @@ export default defineComponent({
             set: (val: any) => { store.commit('setOpenModalServicioPrestado', val) }
         });
 
+         let User: any = computed({
+            get: () => { return store.getters.user },
+            set: (val: any) => { store.commit('setUser', val) }
+        });
+
         const openModalServicioPrestado = async () => {
 
             modalServicioPrestado.value = await modalController
@@ -104,12 +110,12 @@ export default defineComponent({
 
 
         const aceptDrive: any = async () => {
-            await axios.post('https://ftrack.upwaresoft.com/api/store-solicitud-drive',
+            await axios.post('http://localhost:8000/api/store-servicio-drive',
                 {
-                    id: destino.value.data.data.id,
+                    id: destino.value.data.id,
                     drive: JSON.stringify({
                         name: 'jonh doe',
-                        id: '5066767529',
+                        id: User.value.id,
                         carro: 'FIAT 1 color verde',
                         placa: 'MAO12F',
                         likes: 0,
@@ -120,7 +126,7 @@ export default defineComponent({
                     })
                 });
 
-            openModalServicioPrestado()
+            // openModalServicioPrestado()
         }
 
         return {

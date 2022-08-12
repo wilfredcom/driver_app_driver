@@ -8,15 +8,17 @@
             <ion-card-content>
                 <div class="grid grid-cols-12">
                     <div class="col-span-2">
-                        <img  v-if="destino.user.paquete.cantidad == null && destino.user.paquete.cantidad <= 0" src="../../public/assets/icon/icons8-car.gif" />
+                        <img  v-if="destino.data.type_solicitud == 'taxi' " src="../../public/assets/icon/icons8-car.gif" />
                         <img  v-else  src="../../public/assets/icon/icons8-truck.gif" />
                     </div>
-                    <div class="col-span-10  mt-2 ml-2">
+                        <div class="col-span-10  mt-2 ml-2">
+                    <!-- 
                         <div class=" text-center  uppercase text-[#000] text-5xl font-bold align-middle mb-5 ">
                             <p v-if="destino.user.paquete.cantidad == null && destino.user.paquete.cantidad <= 0" >Servicio de taxi iniciado...</p>
                             <p v-else>Servicio de transporte iniciado...</p>
                         </div>
-                        <div class=" text-left divide-y uppercase text-[#cecece] text-xs font-bold align-middle mb-2 ">
+                        -->
+                        <!-- <div class=" text-left divide-y uppercase text-[#cecece] text-xs font-bold align-middle mb-2 ">
                             <p>Inicio: {{ destino.user.inicio_ruta_address.substr(0, 20) }} </p>
                             <p>Destino: {{ destino.user.final_ruta_address.substr(0, 20) }} </p>
                             <p>Tiempo(Aprox): {{ destino.user.tiempo_aproximado_de_viaje.text }} </p>
@@ -33,7 +35,7 @@
                             <p>cantidad: {{ destino.user.paquete.cantidad }}</p>
                             <p>descripción: {{ destino.user.paquete.descripcion }}</p>
                             <p>Costo.: {{ Intl.NumberFormat().format(destino.user.costo) }} </p>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="col-span-12 text-center">
                         <ion-chip color="danger">
@@ -52,7 +54,7 @@
                             <ion-label>Mensaje</ion-label>
                             <ion-icon name="paper-plane-outline"></ion-icon>
                         </ion-chip>
-                    </div>
+                    </div> 
                 </div>
             </ion-card-content>
         </ion-card>
@@ -66,9 +68,9 @@ import {
     IonCardSubtitle,
     IonCardTitle,
     IonCardContent,
-    IonChip,
-    IonIcon,
-    IonLabel,
+    // IonChip,
+    // IonIcon,
+    // IonLabel,
     alertController
 } from '@ionic/vue';
 import {
@@ -132,9 +134,9 @@ export default defineComponent({
         IonCardSubtitle,
         IonCardTitle,
         IonCardContent,
-        IonChip,
-        IonIcon,
-        IonLabel
+        // IonChip,
+        // IonIcon,
+        // IonLabel
     }
 });
 </script>
