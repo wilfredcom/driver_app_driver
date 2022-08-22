@@ -54,6 +54,7 @@ import { defineComponent, ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 import { useStore } from 'vuex'
+import { Storage } from '@capacitor/storage';
 
 
 export default defineComponent({
@@ -79,6 +80,7 @@ export default defineComponent({
                 })
                 let { data }: any = await axios.post('http://localhost:8000/api/get-user', { email: model_user.value.email })
                 User.value = data
+                await Storage.set({key: "user_login", value: JSON.stringify({user: User.value})})
                 const toast = await toastController.create({
                     header: "¡Exito!",
                     message: "inicio de session con  exito",
@@ -88,7 +90,7 @@ export default defineComponent({
                     icon: 'checkmark-done-outline'
                 });
                 await toast.present();
-                router.push('/folder/home')
+                router.push('/folder')
             } catch (e: any) {
                 const toast = await toastController.create({
                     header: "¡Advertencia!",

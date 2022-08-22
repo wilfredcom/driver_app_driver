@@ -75,7 +75,6 @@ import axios from 'axios'
 // import { informationCircle } from 'ionicons/icons';
 
 import ModalServPrestados from '../componentes/modalServicioPrestado.vue'
-import { useRouter } from 'vue-router';
 
 
 export default defineComponent({
@@ -126,7 +125,7 @@ export default defineComponent({
                     })
                 });
 
-            // openModalServicioPrestado()
+            openModalServicioPrestado()
         }
 
         return {

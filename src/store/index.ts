@@ -4,7 +4,7 @@ import { modalController } from '@ionic/vue';
 import Modal from '../componentes/modalBuscarDestino.vue'
 import ModalServicioPrestado from '../componentes/modalServicioPrestado.vue'
 import Pusher from 'pusher-js'
-import State from 'pusher-js/types/src/core/http/state';
+// import State from 'pusher-js/types/src/core/http/state';
 
 export default createStore({
     state: {
