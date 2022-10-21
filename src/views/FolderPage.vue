@@ -49,16 +49,19 @@
             <p>Destino: {{ viaje.final_ruta_address.substr(0, 20) }}</p>
             <p>Tiempo(Aprox): {{ viaje.tiempo_aproximado_de_viaje.text }}</p>
             <p>Km.: {{ viaje.distancia_servicio.text }}</p>
-            <p>Costo.: {{ new Intl.NumberFormat(['ban', 'id']).format(viaje.costo) }}</p>
+            <p>
+              Costo.:
+              {{ new Intl.NumberFormat(["ban", "id"]).format(viaje.costo) }}
+            </p>
           </div>
           <div
             class="text-left divide-y uppercase text-[#cecece] text-sm font-bold align-middle mb-2"
             v-else
           >
-            <p>Solicitud Creada: {{ viaje.creado }}</p>
-            <p>Inicio: {{ viaje.inicio_ruta_address.substr(0, 20) }}</p>
-            <p>Destino: {{ viaje.final_ruta_address.substr(0, 20) }}</p>
-            <p>Tiempo(Aprox): {{ viaje.tiempo_aproximado_de_viaje.text }}</p>
+            <!-- <p>Solicitud Creada: {{ viaje.creado }}</p> -->
+            <!-- <p>Inicio: {{ viaje.inicio_ruta_address.substr(0, 20) }}</p>
+            <p>Destino: {{ viaje.final_ruta_address.substr(0, 20) }}</p> -->
+            <!-- <p>Tiempo(Aprox): {{ viaje.tiempo_aproximado_de_viaje.text }}</p>
             <p>Km.: {{ viaje.distancia_servicio.text }}</p>
             <p class="text-center">-----paquete-----</p>
             <p>Alto: {{ viaje.alto }} (cm)</p>
@@ -67,13 +70,17 @@
             <p>peso: {{ viaje.peso }}(g)</p>
             <p>cantidad: {{ viaje.cantidad }}</p>
             <p>descripción: {{ viaje.descripcion }}</p>
-            <p>Costo.: {{ new Intl.NumberFormat(['ban', 'id']).format(viaje.costo) }}</p>
+            <p>
+              Costo.:
+              {{ new Intl.NumberFormat(["ban", "id"]).format(viaje.costo) }}
+            </p> -->
           </div>
         </div>
         <div
           class="col-span-6 text-[#000] align-middle text-center self-center font-bold ml-2"
         >
           <button
+          @click="RechazarServicio(viaje)"
             class="mt-2 mb-2 w-full bg-red-300 p-2 rounded-xl hover:bg-red-500 text-white font-semibold"
           >
             <p>RECHAZAR</p>
@@ -106,10 +113,10 @@ import {
   onIonViewWillEnter,
   modalController,
 } from "@ionic/vue";
-// import { App } from '@capacitor/app';
 import { useStore } from "vuex";
 import axios from "axios";
 import Modal from "../componentes/modalBuscarDestino.vue";
+import { Storage } from "@capacitor/storage";
 
 export default defineComponent({
   name: "FolderPage",
@@ -132,22 +139,6 @@ export default defineComponent({
         store.commit("setLoader", val);
       },
     });
-    // const markertInitPosition: any = computed({
-    //   get: () => {
-    //     return store.getters.markertInitPosition;
-    //   },
-    //   set: (val) => {
-    //     store.commit("setMarkerInitPosition", val);
-    //   },
-    // });
-    // const map: any = computed({
-    //   get: () => {
-    //     return store.getters.Map;
-    //   },
-    //   set: (val) => {
-    //     store.commit("setMap", val);
-    //   },
-    // });
     let google: any = computed({
       get: () => {
         return store.getters.google;
@@ -164,7 +155,6 @@ export default defineComponent({
         store.commit("setPusher", val);
       },
     });
-    // let DataStatusAnswere: any = ref(null);
     let MisViajes: any = computed({
       get: () => {
         return store.getters.mis_viajes;
@@ -194,10 +184,6 @@ export default defineComponent({
       try {
         navigator.geolocation.getCurrentPosition(async () => {
           google.value = await loader.value.load();
-          var channel: any = pusher.value.subscribe("channel-services");
-          channel.bind("services-event", function (data: any) {
-            MisViajes.value.unshift(data.message)
-          });
         });
       } catch (error) {
         // openToast(error)
@@ -205,9 +191,43 @@ export default defineComponent({
       }
     };
 
+    const linstenChanels = async () => {
+      const pos: any = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject);
+      });
+      google.value = await loader.value.load();
+      var channel: any = pusher.value.subscribe("channel-services");
+      channel.bind("services-event", async (data: any) => {
+        const service = new google.value.maps.DistanceMatrixService();
+        const destinationA = data.message.inicio_ruta_address;
+        const destinationB = data.message.final_ruta_address;
+        const origin1 = {
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+        };
+        const origin2 = JSON.parse(data.message.final_ruta_coords);
+        const request = {
+          origins: [origin1, origin2],
+          destinations: [destinationA, destinationB],
+          travelMode: google.value.maps.TravelMode.DRIVING,
+          unitSystem: google.value.maps.UnitSystem.METRIC,
+          avoidHighways: false,
+          avoidTolls: false,
+        };
+
+        await service.getDistanceMatrix(request).then((response: any) => {
+          var distancia = response.rows[0].elements[0].distance.value;
+          if (distancia < 30000) {
+            console.log({ data });
+            MisViajes.value.push(data);
+          }
+        });
+      });
+    };
+
     const AceptServicio: any = async (serv: any) => {
       try {
-        console.log({ serv })
+        console.log({ serv });
         destino.value.user = serv.user;
         destino.value.data = serv;
         openModal();
@@ -216,10 +236,28 @@ export default defineComponent({
         console.log(e);
       }
     };
+    const RechazarServicio: any = async (serv: any) => {
+      try {
+        const GetUserlogin: any = await Storage.get({ key: "user_login" });
+        var parseUserLogin = JSON.parse(GetUserlogin.value);
+        var model = {
+          rechazar: false,
+          user_id: parseUserLogin.user.id,
+           estado: 'Servicio cancelado por conductor',
+        }
+        await axios.post(`http://192.168.1.6:8000/api/rechazar-servicio/${serv.id}`, model )
+        getSolicitudes()
+        // openModal();
+        // ListenAnswere()
+      } catch (e) {
+        console.log(e);
+      }
+    };
     const getSolicitudes: any = async () => {
       try {
+        MisViajes.value = [];
         let { data }: any = await axios(
-          "http://localhost:8000/api/get-servicios"
+          "http://localhost:8000/api/get-servicios-driver"
         );
         const pos: any = await new Promise((resolve, reject) => {
           navigator.geolocation.getCurrentPosition(resolve, reject);
@@ -244,7 +282,7 @@ export default defineComponent({
           };
           await service.getDistanceMatrix(request).then((response: any) => {
             var distancia = response.rows[0].elements[0].distance.value;
-            if (distancia < 3000) {
+            if (distancia < 30000) {
               MisViajes.value.push(element);
             }
           });
@@ -253,15 +291,6 @@ export default defineComponent({
         console.log(e);
       }
     };
-    // const ListenAnswere: any = async () => {
-    //     try {
-    //         let { data } = await axios.post('https://ftrack.upwaresoft.com/api/get-solicitud-user', { id: destino.value.data.data.id })
-    //         DataStatusAnswere.value = data.driver
-
-    //     } catch (e) {
-    //         console.log({ e })
-    //     }
-    // }
     const openModal = async () => {
       modalPrincipal.value = await modalController.create({
         component: Modal,
@@ -274,6 +303,7 @@ export default defineComponent({
     onMounted(() => {
       initMap();
       getSolicitudes();
+      linstenChanels();
     });
     onIonViewWillEnter(() => {
       initMap();
@@ -281,6 +311,7 @@ export default defineComponent({
     return {
       MisViajes,
       AceptServicio,
+      RechazarServicio
     };
   },
 });
