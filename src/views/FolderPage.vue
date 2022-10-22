@@ -245,7 +245,7 @@ export default defineComponent({
           user_id: parseUserLogin.user.id,
            estado: 'Servicio cancelado por conductor',
         }
-        await axios.post(`http://192.168.1.6:8000/api/rechazar-servicio/${serv.id}`, model )
+        await axios.post(`http://localhost:8000/api/rechazar-servicio/${serv.id}`, model )
         getSolicitudes()
         // openModal();
         // ListenAnswere()
