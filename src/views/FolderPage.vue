@@ -17,11 +17,7 @@
                     <ion-title size="large">{{ $route.params.id }}</ion-title>
                 </ion-toolbar>
             </ion-header> -->
-      <div
-        class="grid grid-cols-12 mb-2 ml-2 mr-2 shadow-2xl"
-        v-for="(viaje, v) in MisViajes"
-        :key="v"
-      >
+      <div class="grid grid-cols-12 mb-2 ml-2 mr-2 shadow-2xl" v-for="(viaje, v) in MisViajes" :key="v">
         <div class="col-span-2">
           <img
             src="https://img.icons8.com/stickers/100/000000/car-theft.png"
@@ -34,35 +30,27 @@
           />
         </div>
         <div class="col-span-10 mt-2 ml-2">
-          <div
-            class="text-center uppercase text-[#000] text-2xl font-bold align-middle mb-5"
-          >
+          <div class="text-center uppercase text-[#000] text-2xl font-bold align-middle mb-5">
             <p v-if="viaje.type_solicitud == 'taxi'">Solicitud De taxi</p>
             <p v-else class="text-sm">Solicitud De Envio de paquete</p>
           </div>
-          <div
-            class="text-left divide-y uppercase text-[#cecece] text-sm font-bold align-middle mb-2"
-            v-if="viaje.type_solicitud == 'taxi'"
-          >
+          <div class="text-left divide-y uppercase text-[#cecece] text-sm font-bold align-middle mb-2" v-if="viaje.type_solicitud == 'taxi'">
             <p>Solicitud Creada: {{ viaje.creado }}</p>
             <p>Inicio: {{ viaje.inicio_ruta_address.substr(0, 20) }}</p>
             <p>Destino: {{ viaje.final_ruta_address.substr(0, 20) }}</p>
-            <p>Tiempo(Aprox): {{ viaje.tiempo_aproximado_de_viaje.text }}</p>
-            <p>Km.: {{ viaje.distancia_servicio.text }}</p>
+            <p>Tiempo(Aprox): {{ viaje.tiempo_aproximado_de_viaje ? JSON.parse(viaje.tiempo_aproximado_de_viaje).text: '' }}</p>
+            <p>Km.: {{ viaje.distancia_servicio ? JSON.parse(viaje.distancia_servicio).text: '' }}</p>
             <p>
               Costo.:
               {{ new Intl.NumberFormat(["ban", "id"]).format(viaje.costo) }}
             </p>
           </div>
-          <div
-            class="text-left divide-y uppercase text-[#cecece] text-sm font-bold align-middle mb-2"
-            v-else
-          >
-            <!-- <p>Solicitud Creada: {{ viaje.creado }}</p> -->
-            <!-- <p>Inicio: {{ viaje.inicio_ruta_address.substr(0, 20) }}</p>
-            <p>Destino: {{ viaje.final_ruta_address.substr(0, 20) }}</p> -->
-            <!-- <p>Tiempo(Aprox): {{ viaje.tiempo_aproximado_de_viaje.text }}</p>
-            <p>Km.: {{ viaje.distancia_servicio.text }}</p>
+          <div class="text-left divide-y uppercase text-[#cecece] text-sm font-bold align-middle mb-2" v-else>
+            <p>Solicitud Creada: {{ viaje.creado }}</p>
+            <p>Inicio: {{ viaje.inicio_ruta_address }}</p>
+            <p>Destino: {{ viaje.final_ruta_address }}</p>
+            <p>Tiempo(Aprox): {{ viaje.tiempo_aproximado_de_viaje ? JSON.parse(viaje.tiempo_aproximado_de_viaje).text: '' }}</p>
+            <p>Km.: {{ viaje.distancia_servicio ? JSON.parse(viaje.distancia_servicio).text: '' }}</p>
             <p class="text-center">-----paquete-----</p>
             <p>Alto: {{ viaje.alto }} (cm)</p>
             <p>Ancho: {{ viaje.ancho }} (cm)</p>
@@ -73,7 +61,7 @@
             <p>
               Costo.:
               {{ new Intl.NumberFormat(["ban", "id"]).format(viaje.costo) }}
-            </p> -->
+            </p>
           </div>
         </div>
         <div
@@ -192,37 +180,25 @@ export default defineComponent({
     };
 
     const linstenChanels = async () => {
-      const pos: any = await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject);
-      });
+      // const pos: any = await new Promise((resolve, reject) => {
+      //   navigator.geolocation.getCurrentPosition(resolve, reject);
+      // });
       google.value = await loader.value.load();
       var channel: any = pusher.value.subscribe("channel-services");
-      channel.bind("services-event", async (data: any) => {
-        const service = new google.value.maps.DistanceMatrixService();
-        const destinationA = data.message.inicio_ruta_address;
-        const destinationB = data.message.final_ruta_address;
-        const origin1 = {
-          lat: pos.coords.latitude,
-          lng: pos.coords.longitude,
-        };
-        const origin2 = JSON.parse(data.message.final_ruta_coords);
-        const request = {
-          origins: [origin1, origin2],
-          destinations: [destinationA, destinationB],
-          travelMode: google.value.maps.TravelMode.DRIVING,
-          unitSystem: google.value.maps.UnitSystem.METRIC,
-          avoidHighways: false,
-          avoidTolls: false,
-        };
-
-        await service.getDistanceMatrix(request).then((response: any) => {
-          var distancia = response.rows[0].elements[0].distance.value;
-          if (distancia < 30000) {
-            console.log({ data });
-            MisViajes.value.push(data);
-          }
-        });
+      channel.bind("services-event", async () => {
+        getSolicitudes()
       });
+
+      var channel2 = pusher.value.subscribe("channel-response-resquest-drive");
+      channel2.bind("services-response-request-drive-event", function () {
+          getSolicitudes()
+      });
+
+      var channel3 = pusher.value.subscribe("channel-response-cancel-service-user");
+      channel3.bind("services-response-cancel-service-user-event", function () {
+          getSolicitudes()
+      });
+
     };
 
     const AceptServicio: any = async (serv: any) => {
@@ -280,12 +256,15 @@ export default defineComponent({
             avoidHighways: false,
             avoidTolls: false,
           };
+
           await service.getDistanceMatrix(request).then((response: any) => {
             var distancia = response.rows[0].elements[0].distance.value;
             if (distancia < 30000) {
+              console.log({ element })
               MisViajes.value.push(element);
             }
           });
+
         }
       } catch (e) {
         console.log(e);
